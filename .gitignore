@@ -1,0 +1,19 @@
+# Terraform
+**\.terraform/
+**\terraform.*
+**\.terraform.*
+**\*.tfstate
+**\*.tfstate.*
+**\.terraform.lock.hcl
+**\crash.log
+
+# Azure Functions
+local.settings.json
+__pycache__/
+*.pyc
+
+# VSCode
+.vscode/
+
+# Local Environment files
+*.env
