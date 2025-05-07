@@ -103,3 +103,6 @@ docker-compose.override.yml
 *.trx
 *.runsettings
 *.coverage.info
+
+# Visual Studio
+.vs/
