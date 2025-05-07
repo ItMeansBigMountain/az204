@@ -8,42 +8,13 @@ on:
       - 'labs/app_service_demo/**'
       - '.github/workflows/app-service-cicd.yml'
 
-env:
-  TF_DIR: labs/app_service_demo/infra
-
 jobs:
-
-  terraform-apply:
-    name: Terraform Apply
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-
-    - name: Terraform Init
-      run: terraform init
-      working-directory: ${{ env.TF_DIR }}
-
-    - name: Terraform Apply
-      run: terraform apply -auto-approve
-      working-directory: ${{ env.TF_DIR }}
-      env:
-        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-
   build-and-deploy:
     name: Build and Deploy Blazor to Azure
-    needs: terraform-apply
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: labs/app_service_demo/blazor.trapistan
+        working-directory: './labs/app_service_demo/blazor.trapistan'
 
     steps:
     - name: Checkout
@@ -66,4 +37,4 @@ jobs:
         app-name: trapistan
         slot-name: Production
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: labs/app_service_demo/app-service-publish
+        package: '**/app_service_demo/app-service-publish'
