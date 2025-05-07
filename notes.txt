@@ -1,0 +1,15 @@
+TERRAFORM RESOURCE MANAGER SERVICE ACCOUNT 
+
+    CREATE SERVICE ACCOUNT 
+        az ad sp create-for-rbac --name terraform-github --role Contributor --scopes /subscriptions/<your-subscription-id> --sdk-auth
+
+    DELETE SERVICE ACCOUNT 
+        az ad sp delete --id <client-id>
+
+
+
+____________________________________________________________
+
+
+
+
