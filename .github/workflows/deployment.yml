@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'labs/app_service_demo/**' # Trigger only when changes are made in this directory
 
 jobs:
   build-and-deploy:
@@ -19,13 +21,13 @@ jobs:
         dotnet-version: '9.0.x'
 
     - name: Restore Dependencies
-      run: dotnet restore blazor.trapistan
+      run: dotnet restore labs/app_service_demo/blazor.trapistan
 
     - name: Clean previous publish
       run: rm -rf ./publish
 
     - name: Publish .NET app
-      run: dotnet publish blazor.trapistan -c Release -o ./publish
+      run: dotnet publish labs/app_service_demo/blazor.trapistan -c Release -o ./publish
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
