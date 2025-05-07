@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - '**/labs/app_service_demo/**'
-      - '.github/workflows/app-service-cicd.yml'
+      - '**/.github/workflows/app-service-cicd.yml'
 
 jobs:
   build-and-deploy:
@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: labs/app_service_demo/blazor.trapistan
+        working-directory: '**/labs/app_service_demo/blazor.trapistan'
 
     steps:
     - name: Checkout
