@@ -10,22 +10,10 @@
 using System;
 using System.Reflection;
 
-[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("8261896d-7455-4661-9622-0603d9102ddb")]
-[assembly: System.Reflection.AssemblyMetadata("dcpclipath", ("C:\\Users\\faree\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.0.0\\tools\\d" +
-    "cp.exe"))]
-[assembly: System.Reflection.AssemblyMetadata("dcpextensionpaths", ("C:\\Users\\faree\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.0.0\\tools\\e" +
-    "xt\\"))]
-[assembly: System.Reflection.AssemblyMetadata("dcpbinpath", ("C:\\Users\\faree\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.0.0\\tools\\e" +
-    "xt\\bin\\"))]
-[assembly: System.Reflection.AssemblyMetadata("apphostprojectpath", ("C:\\Users\\faree\\OneDrive\\Desktop\\Code\\AZ204\\labs\\app_service_demo\\blazor.trapistan" +
-    "\\blazor.trapistan.AppHost"))]
-[assembly: System.Reflection.AssemblyMetadata("apphostprojectname", "blazor.trapistan.AppHost.csproj")]
-[assembly: System.Reflection.AssemblyMetadata("aspiredashboardpath", ("C:\\Users\\faree\\.nuget\\packages\\aspire.dashboard.sdk.win-x64\\9.0.0\\tools\\Aspire.Da" +
-    "shboard.exe"))]
 [assembly: System.Reflection.AssemblyCompanyAttribute("blazor.trapistan.AppHost")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2beea0746f9ec8eba02256057c51515e8d6bb203")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+18259c09e581b7ad51e508093a75857699cdec8f")]
 [assembly: System.Reflection.AssemblyProductAttribute("blazor.trapistan.AppHost")]
 [assembly: System.Reflection.AssemblyTitleAttribute("blazor.trapistan.AppHost")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

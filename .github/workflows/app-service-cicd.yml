@@ -29,7 +29,8 @@ jobs:
       run: dotnet restore
 
     - name: Publish App
-      run: dotnet publish -c Release -o ../app-service-publish
+      run: dotnet publish ./blazor.trapistan.Web -c Release -o ../app-service-publish
+    
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
