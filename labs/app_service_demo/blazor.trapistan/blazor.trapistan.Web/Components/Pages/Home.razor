@@ -2,6 +2,36 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Welcome to the Game Zone!</h1>
 
-omfg wow
+<p>Try your luck with our "Guess the Number" game!</p>
+
+<h3>Guess the Number</h3>
+<p>I'm thinking of a number between 1 and 100. Can you guess what it is?</p>
+
+<input @bind="UserGuess" type="number" placeholder="Enter your guess" />
+<button @onclick="CheckGuess">Submit Guess</button>
+
+<p>@Message</p>
+
+@code {
+    private int TargetNumber = new Random().Next(1, 101);
+    private int UserGuess;
+    private string Message = "Take a guess!";
+
+    private void CheckGuess()
+    {
+        if (UserGuess == TargetNumber)
+        {
+            Message = "Congratulations! You guessed the correct number!";
+        }
+        else if (UserGuess < TargetNumber)
+        {
+            Message = "Too low! Try again.";
+        }
+        else
+        {
+            Message = "Too high! Try again.";
+        }
+    }
+}
