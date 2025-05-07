@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - '**/labs/app_service_demo/**'
+      - '.github/workflows/app-service-cicd.yml'
 
 jobs:
   build-and-deploy:
