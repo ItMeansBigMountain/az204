@@ -29,8 +29,8 @@ jobs:
       run: dotnet restore ./blazor.trapistan/blazor.trapistan.Web/blazor.trapistan.Web.csproj
       
 
-    # - name: Publish App
-    #   run: dotnet publish ./blazor.trapistan/blazor.trapistan.Web -c Release -o ./app-service-publish
+    - name: Publish App
+      run: dotnet publish ./blazor.trapistan/blazor.trapistan.Web -c Release -o ./app-service-publish
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
@@ -38,4 +38,4 @@ jobs:
         app-name: trapistan
         slot-name: Production
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: ./blazor.trapistan/blazor.trapistan.Web
+        package: app-service-publish
