@@ -32,11 +32,11 @@ jobs:
     - name: Publish App
       run: dotnet publish ./blazor.trapistan/blazor.trapistan.Web -c Release -o ./app-service-publish
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: app-service-publish-folder
-        path: ./app-service-publish
+    # - name: Upload Artifact
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: app-service-publish-folder
+    #     path: ./app-service-publish
     
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
