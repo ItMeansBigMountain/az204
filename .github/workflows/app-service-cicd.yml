@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'labs/app_service_demo/**'
+      - '**/labs/app_service_demo/**'
 
 jobs:
   build-and-deploy:
