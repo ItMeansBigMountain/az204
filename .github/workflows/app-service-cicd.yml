@@ -26,7 +26,8 @@ jobs:
         dotnet-version: '9.0.x'
 
     - name: Restore Dependencies
-      run: dotnet restore
+      run: dotnet restore ./blazor.trapistan/blazor.trapistan.Web/blazor.trapistan.Web.csproj
+      
 
     - name: Publish App
       run: dotnet publish ./blazor.trapistan/blazor.trapistan.Web -c Release -o ./app-service-publish
