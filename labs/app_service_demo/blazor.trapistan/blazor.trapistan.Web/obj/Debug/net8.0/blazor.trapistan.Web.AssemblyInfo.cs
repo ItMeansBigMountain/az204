@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("blazor.trapistan.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+340cd1cef94fa06970ff32a0afe933b58559c716")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2beea0746f9ec8eba02256057c51515e8d6bb203")]
 [assembly: System.Reflection.AssemblyProductAttribute("blazor.trapistan.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("blazor.trapistan.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
