@@ -5,8 +5,9 @@ TERRAFORM RESOURCE MANAGER SERVICE ACCOUNT
 
     DELETE SERVICE ACCOUNT 
         az ad sp delete --id <client-id>
-
-
+        
+        CONFIRM DELETE
+            az ad sp show --id <client-id>
 
 ____________________________________________________________
 
