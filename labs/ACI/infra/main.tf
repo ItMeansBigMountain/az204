@@ -1,0 +1,39 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.0"
+    }
+  }
+  required_version = ">= 1.2.0"
+}
+
+provider "azurerm" {
+  features {}
+  subscription_id = var.subscription_id
+}
+
+resource "azurerm_container_group" "trapistan_aci" {
+  name                = "trapistan-aci"
+  location            = "Central US"
+  resource_group_name = "az204"
+  os_type             = "Linux"
+  restart_policy      = "OnFailure"
+
+  ip_address_type     = "Public"
+  dns_name_label      = "trapistan-aci"
+
+  container {
+    name   = "trapistan-aci"
+    image  = "mcr.microsoft.com/azuredocs/aci-helloworld:latest"
+    cpu    = 1
+    memory = 1.5
+
+    ports {
+      port     = 80
+      protocol = "TCP"
+    }
+  }
+
+  tags = {}
+}
