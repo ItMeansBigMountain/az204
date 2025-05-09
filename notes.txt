@@ -11,6 +11,27 @@ TERRAFORM RESOURCE MANAGER SERVICE ACCOUNT
 
 ____________________________________________________________
 
+BUILD A DOCKER IMAGE 
+    # Set up example
+    cd webapp/frequencyFinder.Hz
 
+    # Build
+    docker build -t trapistanwebapp:v1 .
 
+    # Tag for ACR
+    docker tag trapistanwebapp:v1 trapistanacr.azurecr.io/trapistanwebapp:v1
+
+    # Login & Push
+    az acr login --name trapistanacr
+    docker push trapistanacr.azurecr.io/trapistanwebapp:v1
+
+____________________________________________________________
+
+AZURE CONTAINER REGISTRY USERNAME AND PASSWORD
+    # Get ACR username
+    az acr credential show --name trapistanacr --query "username" --output tsv
+
+    # Get ACR password
+    az acr credential show --name trapistanacr --query "passwords[0].value" --output tsv
+____________________________________________________________
 

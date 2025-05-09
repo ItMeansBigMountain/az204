@@ -1,0 +1,48 @@
+name: Build and Push to ACR
+
+on:
+    push:
+      branches:
+        - main
+      paths:
+        - 'labs/containers_demo/**'
+        - '.github/workflows/docker-acr-deploy.yml'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - name: ⬇️ Checkout code
+      uses: actions/checkout@v3
+
+    - name: 🔐 Azure Login
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: 🐳 Build Docker image
+      run: |
+        cd labs/containers_demo/webapp/frequencyFinder.Hz
+        docker build -t trapistanwebapp:v1 .
+
+    - name: 🏷️ Tag image for ACR
+      run: |
+        docker tag trapistanwebapp:v1 trapistanacr.azurecr.io/trapistanwebapp:v1
+
+    - name: 🔑 Login to ACR
+      uses: azure/docker-login@v1
+      with:
+        login-server: trapistanacr.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+
+    - name: 🚀 Push to ACR
+      run: |
+        docker push trapistanacr.azurecr.io/trapistanwebapp:v1
