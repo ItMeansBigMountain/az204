@@ -30,6 +30,7 @@ jobs:
     - name: 🐳 Build Docker image
       run: |
         cd webapp/frequencyFinder.Hz
+        ls
         docker build -t trapistanwebapp:v1 .
 
     - name: 🏷️ Tag image for ACR
