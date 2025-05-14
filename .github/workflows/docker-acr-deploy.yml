@@ -11,10 +11,12 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
     permissions:
       id-token: write
       contents: read
+    defaults:
+      run:
+        working-directory: './labs/containers_demo'
 
     steps:
     - name: ⬇️ Checkout code
@@ -27,7 +29,7 @@ jobs:
 
     - name: 🐳 Build Docker image
       run: |
-        cd labs/containers_demo/webapp/frequencyFinder.Hz
+        cd webapp/frequencyFinder.Hz
         docker build -t trapistanwebapp:v1 .
 
     - name: 🏷️ Tag image for ACR
