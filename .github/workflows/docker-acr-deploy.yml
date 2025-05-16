@@ -16,7 +16,7 @@ jobs:
       contents: read
     defaults:
       run:
-        working-directory: './labs/containers_demo/webapp/frequencyFinder.Hz'
+        working-directory: './labs/containers_demo/webapp/frequencyFinderHz'
 
     steps:
     - name: ⬇️ Checkout code
@@ -26,14 +26,8 @@ jobs:
 
     - name: 📁 Debug - Print Working Directory
       run: |
-        pwd
         echo "Current directory contents:"
-        ls -la
-        echo "Parent directory contents:"
-        ls -la ..
-        echo "Root directory structure:"
-        tree ../../../ -L 3
-
+        ls
 
       
     - name: 🔐 Azure Login

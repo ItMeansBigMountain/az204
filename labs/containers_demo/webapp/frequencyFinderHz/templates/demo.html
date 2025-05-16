@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Healing Frequency Visualizer</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0f0;
+      font-family: monospace;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    #hz {
+      font-size: 2rem;
+      margin: 1rem 0 0 0;
+    }
+    #match {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+    }
+    button {
+      margin: 1rem;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      background: #0f0;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+    }
+    table {
+      width: 100%;
+      max-width: 800px;
+      margin: 2rem auto;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th, td {
+      padding: 0.5rem;
+      border: 1px solid #0f0;
+    }
+    th {
+      background-color: #111;
+    }
+  </style>
+</head>
+<body>
+  <h1>Healing Frequency Visualizer</h1>
+  <button onclick="start()">Start</button>
+  <div id="hz">-- Hz</div>
+  <div id="match">--</div>
+  <canvas id="waveform" height="150"></canvas>
+  <canvas id="spectrum" height="150"></canvas>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Range (Hz)</th>
+        <th>Name</th>
+        <th>Effect</th>
+      </tr>
+    </thead>
+    <tbody id="freqTable"></tbody>
+  </table>
+
+  <script>
+    const hzDisplay = document.getElementById("hz");
+    const matchDisplay = document.getElementById("match");
+    const waveformCanvas = document.getElementById("waveform");
+    const spectrumCanvas = document.getElementById("spectrum");
+    const waveformCtx = waveformCanvas.getContext("2d");
+    const spectrumCtx = spectrumCanvas.getContext("2d");
+    const freqTable = document.getElementById("freqTable");
+
+    waveformCanvas.width = spectrumCanvas.width = window.innerWidth;
+
+    const healingFrequencies = [
+      { min: 35,  max: 45,  label: "Gamma Boost",      effect: "Cognition",              color: "#999999" },
+      { min: 170, max: 178, label: "Pain Relief",      effect: "Grounding",              color: "#8B0000" },
+      { min: 280, max: 290, label: "Cell Repair",      effect: "Tissue Healing",         color: "#B22222" },
+      { min: 390, max: 400, label: "Liberation",       effect: "Release Fear",           color: "#FF0000" },
+      { min: 412, max: 422, label: "Undoing Trauma",   effect: "Clearing Negativity",    color: "#FF7F00" },
+      { min: 428, max: 436, label: "Earth Tuning",     effect: "Balance & Calm",         color: "#FFD700" },
+      { min: 437, max: 443, label: "Modern Pitch",     effect: "Tension?",               color: "#AAAAAA" },
+      { min: 520, max: 535, label: "Love Frequency",   effect: "DNA Repair",             color: "#00FF00" },
+      { min: 630, max: 645, label: "Connection",       effect: "Relationships",          color: "#00CED1" },
+      { min: 735, max: 750, label: "Detox",            effect: "Purification",           color: "#1E90FF" },
+      { min: 845, max: 860, label: "Intuition",        effect: "Inner Wisdom",           color: "#6A5ACD" },
+      { min: 955, max: 970, label: "God Frequency",    effect: "Pineal Activation",      color: "#9400D3" }
+    ];
+
+    function findMatch(hz) {
+      return healingFrequencies.find(f => hz >= f.min && hz <= f.max) || null;
+    }
+
+    function renderTable() {
+      freqTable.innerHTML = '';
+      healingFrequencies.forEach(f => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${f.min}–${f.max}</td>
+          <td style="color: ${f.color}">${f.label}</td>
+          <td>${f.effect}</td>
+        `;
+        freqTable.appendChild(row);
+      });
+    }
+
+    async function start() {
+      renderTable();
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 2048;
+
+      const source = audioCtx.createMediaStreamSource(stream);
+      source.connect(analyser);
+
+      const freqData = new Float32Array(analyser.frequencyBinCount);
+      const timeData = new Uint8Array(analyser.fftSize);
+      const sampleRate = audioCtx.sampleRate;
+
+      function draw() {
+        analyser.getFloatFrequencyData(freqData);
+        analyser.getByteTimeDomainData(timeData);
+
+        let maxAmp = -Infinity, index = -1;
+        for (let i = 0; i < freqData.length; i++) {
+          if (freqData[i] > maxAmp) {
+            maxAmp = freqData[i];
+            index = i;
+          }
+        }
+
+        const dominantHz = index * sampleRate / analyser.fftSize;
+        hzDisplay.textContent = `${dominantHz.toFixed(1)} Hz`;
+
+        const match = findMatch(dominantHz);
+        if (match) {
+          matchDisplay.textContent = `${match.label} – ${match.effect}`;
+          matchDisplay.style.color = match.color;
+        } else {
+          matchDisplay.textContent = "--";
+          matchDisplay.style.color = "#0ff";
+        }
+
+        // Spectrum
+        spectrumCtx.clearRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
+        const barWidth = spectrumCanvas.width / freqData.length;
+        for (let i = 0; i < freqData.length; i++) {
+          const val = (freqData[i] + 140) * 2;
+          spectrumCtx.fillStyle = `hsl(${i * 360 / freqData.length}, 100%, 50%)`;
+          spectrumCtx.fillRect(i * barWidth, spectrumCanvas.height - val, barWidth, val);
+        }
+
+        // Waveform
+        waveformCtx.clearRect(0, 0, waveformCanvas.width, waveformCanvas.height);
+        waveformCtx.beginPath();
+        waveformCtx.lineWidth = 2;
+        waveformCtx.strokeStyle = match ? match.color : '#0f0';
+
+        const sliceWidth = waveformCanvas.width / timeData.length;
+        let x = 0;
+
+        for (let i = 0; i < timeData.length; i++) {
+          const v = timeData[i] / 128.0;
+          const y = (v * waveformCanvas.height) / 2;
+          if (i === 0) waveformCtx.moveTo(x, y);
+          else waveformCtx.lineTo(x, y);
+          x += sliceWidth;
+        }
+
+        waveformCtx.stroke();
+        requestAnimationFrame(draw);
+      }
+
+      draw();
+    }
+  </script>
+</body>
+</html>

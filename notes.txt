@@ -13,7 +13,7 @@ ____________________________________________________________
 
 BUILD A DOCKER IMAGE 
     # Set up example
-    cd webapp/frequencyFinder.Hz
+    cd webapp/frequencyFinderHz
 
     # Build
     docker build -t trapistanwebapp:v1 .
