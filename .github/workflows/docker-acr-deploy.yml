@@ -16,7 +16,7 @@ jobs:
       contents: read
     defaults:
       run:
-        working-directory: './labs/containers_demo'
+        working-directory: './labs/containers_demo/webapp/frequencyFinder.Hz'
 
     steps:
     - name: ⬇️ Checkout code
@@ -29,21 +29,19 @@ jobs:
 
     - name: 🐳 Build Docker image
       run: |
-        cd webapp/frequencyFinder.Hz
-        ls
-    #     docker build -t trapistanwebapp:v1 .
+        docker build -t trapistanwebapp:v1 .
 
-    # - name: 🏷️ Tag image for ACR
-    #   run: |
-    #     docker tag trapistanwebapp:v1 trapistanacr.azurecr.io/trapistanwebapp:v1
+    - name: 🏷️ Tag image for ACR
+      run: |
+        docker tag trapistanwebapp:v1 trapistanacr.azurecr.io/trapistanwebapp:v1
 
-    # - name: 🔑 Login to ACR
-    #   uses: azure/docker-login@v1
-    #   with:
-    #     login-server: trapistanacr.azurecr.io
-    #     username: ${{ secrets.ACR_USERNAME }}
-    #     password: ${{ secrets.ACR_PASSWORD }}
+    - name: 🔑 Login to ACR
+      uses: azure/docker-login@v1
+      with:
+        login-server: trapistanacr.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
 
-    # - name: 🚀 Push to ACR
-    #   run: |
-    #     docker push trapistanacr.azurecr.io/trapistanwebapp:v1
+    - name: 🚀 Push to ACR
+      run: |
+        docker push trapistanacr.azurecr.io/trapistanwebapp:v1
