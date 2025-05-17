@@ -35,3 +35,8 @@ AZURE CONTAINER REGISTRY USERNAME AND PASSWORD
     az acr credential show --name trapistanacr --query "passwords[0].value" --output tsv
 ____________________________________________________________
 
+AZURE CONTAINER LOGS 
+    az container logs --name trapistan-aci --resource-group az204
+____________________________________________________________
+
+

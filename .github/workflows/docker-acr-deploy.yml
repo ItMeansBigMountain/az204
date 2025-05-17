@@ -41,7 +41,7 @@ jobs:
 
     - name: 🏷️ Tag image for ACR
       run: |
-        docker tag trapistanwebapp:v1 trapistanacr.azurecr.io/trapistanwebapp:v1
+        docker tag trapistanwebapp:v1 trapistanacr.azurecr.io/trapistanwebapp:latest
 
     - name: 🔑 Login to ACR
       uses: azure/docker-login@v1
@@ -52,4 +52,9 @@ jobs:
 
     - name: 🚀 Push to ACR
       run: |
-        docker push trapistanacr.azurecr.io/trapistanwebapp:v1
+        docker push trapistanacr.azurecr.io/trapistanwebapp:latest
+      
+    - name: 🔑 Logout from ACR
+      run: |
+        az acr logout --name trapistanacr
+        echo "Logged out from ACR"
