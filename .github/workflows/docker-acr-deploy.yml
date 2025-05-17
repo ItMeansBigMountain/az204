@@ -53,8 +53,3 @@ jobs:
     - name: 🚀 Push to ACR
       run: |
         docker push trapistanacr.azurecr.io/trapistanwebapp:latest
-      
-    - name: 🔑 Logout from ACR
-      run: |
-        az acr logout --name trapistanacr
-        echo "Logged out from ACR"
