@@ -57,16 +57,16 @@ resource "azurerm_linux_web_app" "frequencyHZ_webapp" {
   service_plan_id     = azurerm_service_plan.linux_plan.id
 
   site_config {
-    linux_fx_version = "DOCKER|trapistanacr.azurecr.io/trapistanwebapp:latest"
-    # application_stack {
-    #   docker_image_name = "trapistanacr.azurecr.io/trapistanwebapp:latest"
-    #   docker_registry_url = "trapistanacr.azurecr.io"
-    # }
+    application_stack {
+      docker_image_name = "trapistanacr.azurecr.io/trapistanwebapp:latest"
+      # docker_registry_url = "trapistanacr.azurecr.io"
+    }
     always_on       = false
   }
 
   app_settings = {
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
+    "BUILD_VERSION" = timestamp()
   }
 
   identity {

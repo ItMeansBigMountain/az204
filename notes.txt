@@ -39,4 +39,8 @@ AZURE CONTAINER LOGS
     az container logs --name trapistan-aci --resource-group az204
 ____________________________________________________________
 
+ACI CANNOT HAVE SSL 
+    https is not available for Azure container instances... you need to use a webapp if you are going to use this web application in production
+
+____________________________________________________________
 
