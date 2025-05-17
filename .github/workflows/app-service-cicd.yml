@@ -1,4 +1,4 @@
-name: Blazor App CI/CD
+name: Publish Blazor App to Azure Web App
 
 on:
   push:

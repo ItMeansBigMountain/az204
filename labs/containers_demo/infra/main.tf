@@ -31,16 +31,16 @@ resource "azurerm_container_group" "trapistan_aci" {
   ip_address_type = "Public"
   dns_name_label  = "trapistan-aci"
 
-  # image_registry_credential {
-  #   server   = azurerm_container_registry.trapistan_acr.login_server
-  #   username = azurerm_container_registry.trapistan_acr.admin_username
-  #   password = azurerm_container_registry.trapistan_acr.admin_password
-  # }
+  image_registry_credential {
+    server   = azurerm_container_registry.trapistan_acr.login_server
+    username = azurerm_container_registry.trapistan_acr.admin_username
+    password = azurerm_container_registry.trapistan_acr.admin_password
+  }
 
 
   container {
     name   = "trapistan-aci"
-    image  = "mcr.microsoft.com/azuredocs/aci-helloworld:latest"
+    image  = "trapistanacr.azurecr.io/trapistanwebapp:v1"
     cpu    = 1
     memory = 1.5
 
