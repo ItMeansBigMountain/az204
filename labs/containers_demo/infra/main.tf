@@ -40,7 +40,7 @@ resource "azurerm_container_group" "trapistan_aci" {
 
   container {
     name   = "trapistan-aci"
-    image  = "trapistanacr.azurecr.io/trapistanwebapp:v1"
+    image  = "trapistanacr.azurecr.io/trapistanwebapp:latest"
     cpu    = 1
     memory = 1.5
 
