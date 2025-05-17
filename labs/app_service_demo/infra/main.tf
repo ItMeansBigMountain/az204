@@ -27,7 +27,7 @@ resource "azurerm_service_plan" "linux_plan" {
 }
 
 resource "azurerm_linux_web_app" "blazor_webapp" {
-  name                = "trapistan-Blazor"
+  name                = "trapistan-blazor"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   service_plan_id     = azurerm_service_plan.linux_plan.id
@@ -51,7 +51,7 @@ resource "azurerm_linux_web_app" "blazor_webapp" {
 }
 
 resource "azurerm_linux_web_app" "frequencyHZ_webapp" {
-  name                = "trapistan-FrequencyHZ"
+  name                = "trapistan-frequencyhz"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   service_plan_id     = azurerm_service_plan.linux_plan.id
