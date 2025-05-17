@@ -3,6 +3,12 @@ variable "subscription_id" {
   type        = string
 }
 
+variable "service_plan_id" {
+  description = "Azure App Service Plan ID"
+  type        = string
+  
+}
+
 # variable "client_id" {
 #   description = "Azure Client ID (Service Principal)"
 #   type        = string
