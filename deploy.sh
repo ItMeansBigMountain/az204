@@ -7,8 +7,12 @@ set -e
 ROOT_DIR=$(pwd)
 SUCCESS=true
 
-# Find all main.tf files and process their directories
-find . -name "main.tf" | while read -r tf_file; do
+# Use dir /s /b for Windows compatibility
+echo "🔍 Finding Terraform configurations..."
+for tf_file in $(find . -name "main.tf" 2>/dev/null || dir /s /b main.tf); do
+    # Convert Windows paths to Unix style if needed
+    tf_file=$(echo $tf_file | sed 's/\\/\//g')
+    
     # Get the directory containing the main.tf file
     tf_dir=$(dirname "$tf_file")
     echo "📁 Processing Terraform in: $tf_dir"
