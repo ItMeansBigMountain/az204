@@ -41,6 +41,7 @@ resource "azurerm_linux_web_app" "blazor_webapp" {
 
   app_settings = {
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
+    "BUILD_VERSION" = timestamp()
   }
 
   identity {
