@@ -52,3 +52,28 @@ resource "azurerm_container_registry" "trapistan_acr" {
 
 #   tags = {}
 # }
+
+
+
+resource "azurerm_linux_web_app" "frequencyHZ_webapp" {
+  name                = "trapistan-frequencyhz"
+  location            = "Central US"
+  resource_group_name = "az204"
+  service_plan_id     = "/subscriptions/4f070006-f5e7-471d-a859-b15a2a8ee406/resourceGroups/az204/providers/Microsoft.Web/serverFarms/trapistan-linux-plan"
+
+  site_config {
+    application_stack {
+      docker_image_name = "trapistanacr.azurecr.io/trapistanwebapp:latest"
+    }
+    always_on       = false
+  }
+
+  app_settings = {
+    "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
+    "BUILD_VERSION" = timestamp()
+  }
+
+  identity {
+    type = "SystemAssigned"
+  }
+} 
