@@ -63,21 +63,26 @@ resource "azurerm_linux_web_app" "frequencyHZ_webapp" {
 
   site_config {
     application_stack {
-      docker_image_name = "trapistanwebapp:latest"
-      docker_registry_url = azurerm_container_registry.trapistan_acr.login_server
+      # Include full image path with registry
+      docker_image_name = "${azurerm_container_registry.trapistan_acr.login_server}/trapistanwebapp:latest"
+      docker_registry_url = "https://${azurerm_container_registry.trapistan_acr.login_server}"
       docker_registry_username = azurerm_container_registry.trapistan_acr.admin_username
       docker_registry_password = azurerm_container_registry.trapistan_acr.admin_password
-      dotnet_version = "9.0"
     }
-    always_on       = false
+    # Add container settings
+    container_registry_use_managed_identity = false
+    always_on = false
   }
 
   app_settings = {
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
+    "DOCKER_REGISTRY_SERVER_URL" = "https://${azurerm_container_registry.trapistan_acr.login_server}"
+    "DOCKER_REGISTRY_SERVER_USERNAME" = azurerm_container_registry.trapistan_acr.admin_username
+    "DOCKER_REGISTRY_SERVER_PASSWORD" = azurerm_container_registry.trapistan_acr.admin_password
     "BUILD_VERSION" = timestamp()
   }
 
   identity {
     type = "SystemAssigned"
   }
-} 
+}
