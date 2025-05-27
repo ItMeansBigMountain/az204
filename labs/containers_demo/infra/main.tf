@@ -21,6 +21,27 @@ resource "azurerm_container_registry" "trapistan_acr" {
   admin_enabled       = true
 }
 
+
+resource "azurerm_app_service_plan" "trapistan_frequencyHZ_linux_plan" {
+  name                = "trapistan-frequencyHZ-linux-plan"
+  location            = "Central US"
+  resource_group_name = "az204"
+  kind                = "Linux"
+  reserved            = true
+
+  sku {
+    tier = "Standard"
+    size = "S1"
+  }
+
+  per_site_scaling           = false
+  maximum_elastic_worker_count = 1
+}
+
+
+
+
+
 # resource "azurerm_container_group" "trapistan_aci" {
 #   name                = "trapistan-aci"
 #   location            = "Central US"
@@ -59,30 +80,36 @@ resource "azurerm_linux_web_app" "frequencyHZ_webapp" {
   name                = "trapistan-frequencyhz"
   location            = "Central US"
   resource_group_name = "az204"
-  service_plan_id     = "/subscriptions/4f070006-f5e7-471d-a859-b15a2a8ee406/resourceGroups/az204/providers/Microsoft.Web/serverFarms/trapistan-linux-plan"
+  service_plan_id = azurerm_app_service_plan.trapistan_frequencyHZ_linux_plan.id
+
 
   site_config {
     application_stack {
-      # Include full image path with registry
-      docker_image_name = "${azurerm_container_registry.trapistan_acr.login_server}/trapistanwebapp:latest"
-      docker_registry_url = "https://${azurerm_container_registry.trapistan_acr.login_server}"
+      docker_image_name        = "trapistanacr.azurecr.io/trapistanwebapp:latest"
+      docker_registry_url      = "https://trapistanacr.azurecr.io"
       docker_registry_username = azurerm_container_registry.trapistan_acr.admin_username
       docker_registry_password = azurerm_container_registry.trapistan_acr.admin_password
     }
-    # Add container settings
-    container_registry_use_managed_identity = false
-    always_on = false
-  }
-
-  app_settings = {
-    "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
-    "DOCKER_REGISTRY_SERVER_URL" = "https://${azurerm_container_registry.trapistan_acr.login_server}"
-    "DOCKER_REGISTRY_SERVER_USERNAME" = azurerm_container_registry.trapistan_acr.admin_username
-    "DOCKER_REGISTRY_SERVER_PASSWORD" = azurerm_container_registry.trapistan_acr.admin_password
-    "BUILD_VERSION" = timestamp()
+    container_registry_use_managed_identity = true
+    always_on                               = false
   }
 
   identity {
     type = "SystemAssigned"
+  }
+
+  auth_settings {
+    enabled = false
+  }
+
+  app_settings = {
+    "WEBSITES_ENABLE_APP_SERVICE_STORAGE"        = "false"
+    "BUILD_VERSION"                              = timestamp()
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"      = var.applicationinsights_connection_string
+    "APPINSIGHTS_INSTRUMENTATIONKEY"             = var.applicationinsights_instrumentation_key
+    "ApplicationInsightsAgent_EXTENSION_VERSION" = "~3"
+    "WEBSITE_HTTPS_ONLY"                         = "true"
+    "WEBSITE_TIME_ZONE"                          = "Central Standard Time"
+    "WEBSITES_PORT"                              = "8080"
   }
 }

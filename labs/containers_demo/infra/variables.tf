@@ -6,7 +6,16 @@ variable "subscription_id" {
 variable "service_plan_id" {
   description = "Azure App Service Plan ID"
   type        = string
-  
+}
+
+variable "applicationinsights_connection_string" {
+  description = "Application Insights Connection String"
+  type        = string
+}
+
+variable "applicationinsights_instrumentation_key" {
+  description = "Application Insights Instrumentation Key"
+  type        = string
 }
 
 # variable "client_id" {
