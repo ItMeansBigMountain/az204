@@ -85,7 +85,7 @@ resource "azurerm_linux_web_app" "frequencyHZ_webapp" {
 
   site_config {
     application_stack {
-      docker_image_name        = "trapistanacr.azurecr.io/trapistanwebapp:latest"
+      docker_image_name        = "trapistanwebapp:latest"
       docker_registry_url      = "https://trapistanacr.azurecr.io"
       docker_registry_username = azurerm_container_registry.trapistan_acr.admin_username
       docker_registry_password = azurerm_container_registry.trapistan_acr.admin_password
@@ -105,8 +105,8 @@ resource "azurerm_linux_web_app" "frequencyHZ_webapp" {
   app_settings = {
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE"        = "false"
     "BUILD_VERSION"                              = timestamp()
-    "APPLICATIONINSIGHTS_CONNECTION_STRING"      = var.applicationinsights_connection_string
-    "APPINSIGHTS_INSTRUMENTATIONKEY"             = var.applicationinsights_instrumentation_key
+    # "APPLICATIONINSIGHTS_CONNECTION_STRING"      = var.applicationinsights_connection_string
+    # "APPINSIGHTS_INSTRUMENTATIONKEY"             = var.applicationinsights_instrumentation_key
     "ApplicationInsightsAgent_EXTENSION_VERSION" = "~3"
     "WEBSITE_HTTPS_ONLY"                         = "true"
     "WEBSITE_TIME_ZONE"                          = "Central Standard Time"
