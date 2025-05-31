@@ -21,23 +21,13 @@ resource "azurerm_container_registry" "trapistan_acr" {
   admin_enabled       = true
 }
 
-
-resource "azurerm_app_service_plan" "trapistan_frequencyHZ_linux_plan" {
-  name                = "trapistan-frequencyHZ-linux-plan"
-  location            = "Central US"
+resource "azurerm_service_plan" "trapistan_frequencyHZ_linux_plan" {
+  name                = "trapistan-frequencyhz-linux-plan"
   resource_group_name = "az204"
-  kind                = "Linux"
-  reserved            = true
-
-  sku {
-    tier = "Standard"
-    size = "S1"
-  }
-
-  per_site_scaling           = false
-  maximum_elastic_worker_count = 1
+  location            = "Central US"
+  os_type             = "Linux"
+  sku_name            = "F1"
 }
-
 
 
 
@@ -80,8 +70,7 @@ resource "azurerm_linux_web_app" "frequencyHZ_webapp" {
   name                = "trapistan-frequencyhz"
   location            = "Central US"
   resource_group_name = "az204"
-  service_plan_id = azurerm_app_service_plan.trapistan_frequencyHZ_linux_plan.id
-
+  service_plan_id = azurerm_service_plan.trapistan_frequencyHZ_linux_plan.id
 
   site_config {
     application_stack {
@@ -110,6 +99,6 @@ resource "azurerm_linux_web_app" "frequencyHZ_webapp" {
     "ApplicationInsightsAgent_EXTENSION_VERSION" = "~3"
     "WEBSITE_HTTPS_ONLY"                         = "true"
     "WEBSITE_TIME_ZONE"                          = "Central Standard Time"
-    "WEBSITES_PORT"                              = "8080"
+    "WEBSITES_PORT"                              = "8181"
   }
 }
