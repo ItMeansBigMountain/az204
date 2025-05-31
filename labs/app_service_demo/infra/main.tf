@@ -18,35 +18,35 @@ resource "azurerm_resource_group" "main" {
   location = "Central US"
 }
 
-resource "azurerm_service_plan" "linux_plan" {
-  name                = "trapistan-linux-plan"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  os_type             = "Linux"
-  sku_name            = "F1"
-}
+# resource "azurerm_service_plan" "linux_plan" {
+#   name                = "trapistan-linux-plan"
+#   location            = azurerm_resource_group.main.location
+#   resource_group_name = azurerm_resource_group.main.name
+#   os_type             = "Linux"
+#   sku_name            = "F1"
+# }
 
-resource "azurerm_linux_web_app" "blazor_webapp" {
-  name                = "trapistan-blazor"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  service_plan_id     = azurerm_service_plan.linux_plan.id
+# resource "azurerm_linux_web_app" "blazor_webapp" {
+#   name                = "trapistan-blazor"
+#   location            = azurerm_resource_group.main.location
+#   resource_group_name = azurerm_resource_group.main.name
+#   service_plan_id     = azurerm_service_plan.linux_plan.id
 
-  site_config {
-    application_stack {
-      dotnet_version = "9.0"
-    }
-    always_on = false
-  }
+#   site_config {
+#     application_stack {
+#       dotnet_version = "9.0"
+#     }
+#     always_on = false
+#   }
 
-  app_settings = {
-    "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
-    "BUILD_VERSION" = timestamp()
-  }
+#   app_settings = {
+#     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
+#     "BUILD_VERSION" = timestamp()
+#   }
 
-  identity {
-    type = "SystemAssigned"
-  }
+#   identity {
+#     type = "SystemAssigned"
+#   }
 
-  depends_on = [azurerm_service_plan.linux_plan]
-}
+#   depends_on = [azurerm_service_plan.linux_plan]
+# }
