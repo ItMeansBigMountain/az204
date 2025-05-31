@@ -79,7 +79,6 @@ resource "azurerm_linux_web_app" "frequencyHZ_webapp" {
       docker_registry_username = azurerm_container_registry.trapistan_acr.admin_username
       docker_registry_password = azurerm_container_registry.trapistan_acr.admin_password
     }
-    container_registry_use_managed_identity = true
     always_on                               = false
   }
 
