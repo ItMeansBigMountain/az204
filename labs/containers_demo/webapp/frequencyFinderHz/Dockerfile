@@ -12,10 +12,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose port 8080 to match Azure Web App configuration
-EXPOSE 8080
+EXPOSE 8181
 
 # Update the Flask port to 8080
-ENV PORT=8080
+ENV PORT=8181
 
 # Run the Flask app
 CMD ["python", "main.py"]
