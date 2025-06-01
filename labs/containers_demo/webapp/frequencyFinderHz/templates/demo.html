@@ -34,17 +34,40 @@
     }
     table {
       width: 100%;
-      max-width: 800px;
+      max-width: 900px;
       margin: 2rem auto;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
     th, td {
-      padding: 0.5rem;
+      padding: 0.6rem;
       border: 1px solid #0f0;
     }
     th {
       background-color: #111;
+    }
+    .tooltip {
+      border-bottom: 1px dotted #0ff;
+      cursor: help;
+    }
+    #freqHistory {
+      display: block;
+      margin: 2rem auto 0 auto;
+      background: #111;
+      border: 1px solid #0f0;
+      width: 90vw;
+      max-width: 900px;
+      height: 160px;
+    }
+    #ancientWisdom {
+      max-width: 900px;
+      margin: 2rem auto 1rem auto;
+      color: #0fa;
+      background: #101010;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      text-align: left;
     }
   </style>
 </head>
@@ -53,8 +76,9 @@
   <button onclick="start()">Start</button>
   <div id="hz">-- Hz</div>
   <div id="match">--</div>
-  <canvas id="waveform" height="150"></canvas>
-  <canvas id="spectrum" height="150"></canvas>
+  <canvas id="waveform" height="100"></canvas>
+  <canvas id="spectrum" height="100"></canvas>
+  <canvas id="freqHistory"></canvas>
 
   <table>
     <thead>
@@ -62,35 +86,49 @@
         <th>Range (Hz)</th>
         <th>Name</th>
         <th>Effect</th>
+        <th>Ancient Reference</th>
+        <th>Modern Science</th>
+        <th>Symbol</th>
       </tr>
     </thead>
     <tbody id="freqTable"></tbody>
   </table>
+
+  <div id="ancientWisdom">
+    <b>Ancient Wisdom of Frequency & "Ohm" (Aum):</b><br>
+    - <span class="tooltip" title="The primordial sound, considered the vibration of the universe. The frequency of 'Om' is traditionally associated with ~136.1 Hz, near the Schumann resonance (Earth’s natural EM resonance).">&#x0950; Ohm (Aum)</span> is the most sacred sound in Hinduism, Buddhism, and many ancient traditions. It is said to align body, mind, and environment.<br>
+    - <span class="tooltip" title="The fundamental electromagnetic resonance of Earth, ~7.83 Hz, is associated with relaxation and grounding.">Schumann Resonance</span>: 7.83 Hz, considered the Earth’s natural heartbeat.<br>
+    - <span class="tooltip" title="Solfeggio frequencies are an ancient musical scale, used for healing and consciousness expansion. Modern science finds some correlation with brainwave entrainment and health.">Solfeggio Scale</span>: Frequencies like 396, 528, 639 Hz used for healing since ancient times.<br>
+    - Brainwaves (Gamma, Beta, Alpha, Theta, Delta) are measurable with EEG and correspond to various consciousness states.<br>
+    - The symbol <span class="tooltip" title="Unicode OM: U+0950">&#x0950;</span> represents universal vibration in ancient scripts.<br>
+  </div>
 
   <script>
     const hzDisplay = document.getElementById("hz");
     const matchDisplay = document.getElementById("match");
     const waveformCanvas = document.getElementById("waveform");
     const spectrumCanvas = document.getElementById("spectrum");
+    const freqHistoryCanvas = document.getElementById("freqHistory");
     const waveformCtx = waveformCanvas.getContext("2d");
     const spectrumCtx = spectrumCanvas.getContext("2d");
+    const freqHistoryCtx = freqHistoryCanvas.getContext("2d");
     const freqTable = document.getElementById("freqTable");
 
-    waveformCanvas.width = spectrumCanvas.width = window.innerWidth;
+    waveformCanvas.width = spectrumCanvas.width = freqHistoryCanvas.width = window.innerWidth * 0.9;
 
     const healingFrequencies = [
-      { min: 35,  max: 45,  label: "Gamma Boost",      effect: "Cognition",              color: "#999999" },
-      { min: 170, max: 178, label: "Pain Relief",      effect: "Grounding",              color: "#8B0000" },
-      { min: 280, max: 290, label: "Cell Repair",      effect: "Tissue Healing",         color: "#B22222" },
-      { min: 390, max: 400, label: "Liberation",       effect: "Release Fear",           color: "#FF0000" },
-      { min: 412, max: 422, label: "Undoing Trauma",   effect: "Clearing Negativity",    color: "#FF7F00" },
-      { min: 428, max: 436, label: "Earth Tuning",     effect: "Balance & Calm",         color: "#FFD700" },
-      { min: 437, max: 443, label: "Modern Pitch",     effect: "Tension?",               color: "#AAAAAA" },
-      { min: 520, max: 535, label: "Love Frequency",   effect: "DNA Repair",             color: "#00FF00" },
-      { min: 630, max: 645, label: "Connection",       effect: "Relationships",          color: "#00CED1" },
-      { min: 735, max: 750, label: "Detox",            effect: "Purification",           color: "#1E90FF" },
-      { min: 845, max: 860, label: "Intuition",        effect: "Inner Wisdom",           color: "#6A5ACD" },
-      { min: 955, max: 970, label: "God Frequency",    effect: "Pineal Activation",      color: "#9400D3" }
+      { min: 35,  max: 45,  label: "Gamma Boost",      effect: "Cognition",              color: "#999999", ancient: "High Meditation",   modern: "Gamma Brainwaves", symbol: "" },
+      { min: 170, max: 178, label: "Pain Relief",      effect: "Grounding",              color: "#8B0000", ancient: "Chinese Qi",        modern: "Entrainment",      symbol: "" },
+      { min: 280, max: 290, label: "Cell Repair",      effect: "Tissue Healing",         color: "#B22222", ancient: "Egyptian Healing",  modern: "Cellular Repair",  symbol: "" },
+      { min: 390, max: 400, label: "Liberation",       effect: "Release Fear",           color: "#FF0000", ancient: "Solfeggio: 396 Hz", modern: "Neuroscience",     symbol: "" },
+      { min: 412, max: 422, label: "Undoing Trauma",   effect: "Clearing Negativity",    color: "#FF7F00", ancient: "Solfeggio: 417 Hz", modern: "EMDR, Healing",    symbol: "" },
+      { min: 428, max: 436, label: "Earth Tuning",     effect: "Balance & Calm",         color: "#FFD700", ancient: "Schumann Resonance",modern: "Brain/EM field",   symbol: "" },
+      { min: 437, max: 443, label: "Modern Pitch",     effect: "Tension?",               color: "#AAAAAA", ancient: "A=440 controversy", modern: "Concert Pitch",    symbol: "" },
+      { min: 520, max: 535, label: "Love Frequency",   effect: "DNA Repair",             color: "#00FF00", ancient: "Solfeggio: 528 Hz", modern: "DNA/RNA Studies",  symbol: "" },
+      { min: 630, max: 645, label: "Connection",       effect: "Relationships",          color: "#00CED1", ancient: "Solfeggio: 639 Hz", modern: "Heart Sync",       symbol: "" },
+      { min: 735, max: 750, label: "Detox",            effect: "Purification",           color: "#1E90FF", ancient: "Tibetan Bells",     modern: "Detox Studies",    symbol: "" },
+      { min: 845, max: 860, label: "Intuition",        effect: "Inner Wisdom",           color: "#6A5ACD", ancient: "Intuitive Yoga",    modern: "Pineal Activity",  symbol: "" },
+      { min: 955, max: 970, label: "God Frequency",    effect: "Pineal Activation",      color: "#9400D3", ancient: "Solfeggio: 963 Hz", modern: "EEG Studies",      symbol: "ॐ" }
     ];
 
     function findMatch(hz) {
@@ -103,12 +141,18 @@
         const row = document.createElement("tr");
         row.innerHTML = `
           <td>${f.min}–${f.max}</td>
-          <td style="color: ${f.color}">${f.label}</td>
-          <td>${f.effect}</td>
+          <td style="color: ${f.color}" class="tooltip" title="Ancient: ${f.ancient}">${f.label}</td>
+          <td class="tooltip" title="${f.effect}">${f.effect}</td>
+          <td class="tooltip" title="Ancient reference">${f.ancient || "--"}</td>
+          <td class="tooltip" title="Modern science/brainwaves">${f.modern || "--"}</td>
+          <td style="font-size:1.4em;">${f.symbol || ""}</td>
         `;
         freqTable.appendChild(row);
       });
     }
+
+    // Frequency history for the graph
+    let freqHistory = [];
 
     async function start() {
       renderTable();
@@ -138,6 +182,10 @@
 
         const dominantHz = index * sampleRate / analyser.fftSize;
         hzDisplay.textContent = `${dominantHz.toFixed(1)} Hz`;
+
+        // Add to history for graph
+        freqHistory.push(dominantHz);
+        if (freqHistory.length > freqHistoryCanvas.width) freqHistory.shift();
 
         const match = findMatch(dominantHz);
         if (match) {
@@ -173,13 +221,37 @@
           else waveformCtx.lineTo(x, y);
           x += sliceWidth;
         }
-
         waveformCtx.stroke();
+
+        // Frequency History Graph (scrolling)
+        freqHistoryCtx.clearRect(0, 0, freqHistoryCanvas.width, freqHistoryCanvas.height);
+        freqHistoryCtx.beginPath();
+        freqHistoryCtx.lineWidth = 2;
+        freqHistoryCtx.strokeStyle = "#0fa";
+        for (let i = 0; i < freqHistory.length; i++) {
+          const y = freqHistoryCanvas.height - (freqHistory[i] / 1200) * freqHistoryCanvas.height;
+          if (i === 0) freqHistoryCtx.moveTo(i, y);
+          else freqHistoryCtx.lineTo(i, y);
+        }
+        freqHistoryCtx.stroke();
+
+        // Draw scale markers on graph
+        freqHistoryCtx.fillStyle = "#0f0";
+        for (let h = 0; h <= 1200; h += 200) {
+          const y = freqHistoryCanvas.height - (h / 1200) * freqHistoryCanvas.height;
+          freqHistoryCtx.fillText(h + "Hz", 2, y - 2);
+          freqHistoryCtx.beginPath();
+          freqHistoryCtx.moveTo(0, y);
+          freqHistoryCtx.lineTo(10, y);
+          freqHistoryCtx.stroke();
+        }
+
         requestAnimationFrame(draw);
       }
 
       draw();
     }
+    renderTable();
   </script>
 </body>
 </html>
