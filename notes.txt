@@ -44,3 +44,22 @@ ACI CANNOT HAVE SSL
 
 ____________________________________________________________
 
+SCALING UP 
+    singular customer's experience 
+    ie: upgrading service plan and obtaining a better computer for server to run code on.
+
+SCALING OUT 
+    serving multiple customers 
+    ie: replicas of service 
+
+____________________________________________________________
+
+LOG ANALYTICS WORKSPACE 
+    practically a storage account strictly holding logs 
+    - every application insihgts needs one
+
+    - side note, i just use the same one for all of my application insights . but i couldnt find a good way to get one application insight for multiple webapp services.
+
+____________________________________________________________
+
+
