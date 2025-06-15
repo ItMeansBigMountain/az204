@@ -64,11 +64,15 @@ ____________________________________________________________
 
 
 APP SERVICES PROVIDE SERVICE FOR 
-- 
-
+- web apps 
+- api apps 
+- mobile apps 
+- functions that run in app service environment
 ____________________________________________________________
 
 App service plans are for 10 services each.
+
+ACU stands for "azure compute unit"
 
 ____________________________________________________________
 
