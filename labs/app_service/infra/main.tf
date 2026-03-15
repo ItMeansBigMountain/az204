@@ -16,7 +16,7 @@ provider "azurerm" {
 resource "azurerm_resource_group" "main" {
   name     = "az204"
   location = "Central US"
-}
+} # added settings cont...
 
 # resource "azurerm_service_plan" "linux_plan" {
 #   name                = "trapistan-linux-plan"

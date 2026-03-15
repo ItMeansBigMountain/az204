@@ -76,3 +76,24 @@ ACU stands for "azure compute unit"
 
 ____________________________________________________________
 
+
+fetch all wifi passwords 
+
+for /f "tokens=2 delims=:" %A in ('netsh wlan show profiles ^| findstr "All User Profile"') do @for /f "tokens=* delims= " %B in ("%A") do @for /f "tokens=2 delims=:" %C in ('netsh wlan show profile name^="%B" key^=clear ^| findstr "Key Content"') do @for /f "tokens=* delims= " %D in ("%C") do @echo %B : %D
+
+
+____________________________________________________________
+
+
+Container Registry holds all the images 
+
+____________________________________________________________
+
+
+---> ACR
+    ---> REPOSITORY
+        ---> IMAGES
+
+____________________________________________________________
+
+
