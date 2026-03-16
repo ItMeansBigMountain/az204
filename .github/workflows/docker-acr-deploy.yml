@@ -5,7 +5,7 @@ on:
       branches:
         - main
       paths:
-        - 'labs/containers_demo/**'
+        - 'labs/containers/**'
         - '.github/workflows/docker-acr-deploy.yml'
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
       contents: read
     defaults:
       run:
-        working-directory: './labs/containers_demo/webapp/frequencyFinderHz'
+        working-directory: './labs/containers/webapp/frequencyFinderHz'
 
     steps:
     - name: ⬇️ Checkout code
