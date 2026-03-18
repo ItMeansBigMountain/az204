@@ -97,3 +97,18 @@ ____________________________________________________________
 ____________________________________________________________
 
 
+FUNCTION APPS 
+    PAYING PER COMPUTE (pay for what u use)
+
+    event driven execution 
+
+    Different Events 
+        - http request 
+        - database updates
+        - time based
+        - file added to a blob
+        - message in a queue
+
+____________________________________________________________
+
+

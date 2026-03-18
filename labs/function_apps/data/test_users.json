@@ -1,0 +1,32 @@
+[
+  {
+    "id": "user-1",
+    "partitionKey": "user-1",
+    "email": "investor.one@example.com",
+    "isActive": true,
+    "stocks": [
+      { "symbol": "AAPL", "shares": 10, "avgCost": 180.25 },
+      { "symbol": "MSFT", "shares": 4, "avgCost": 420.0 },
+      { "symbol": "SPY", "shares": 2, "avgCost": 510.5 }
+    ]
+  },
+  {
+    "id": "user-2",
+    "partitionKey": "user-2",
+    "email": "investor.two@example.com",
+    "isActive": true,
+    "stocks": [
+      { "symbol": "NVDA", "shares": 5, "avgCost": 118.0 },
+      { "symbol": "AMZN", "shares": 3, "avgCost": 175.5 }
+    ]
+  },
+  {
+    "id": "user-3",
+    "partitionKey": "user-3",
+    "email": "inactive.user@example.com",
+    "isActive": false,
+    "stocks": [
+      { "symbol": "TSLA", "shares": 1, "avgCost": 210.0 }
+    ]
+  }
+]
