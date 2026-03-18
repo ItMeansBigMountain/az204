@@ -32,16 +32,12 @@ This lab folder contains a minimal Azure Functions app that sends one daily gain
 - The stock lookup uses Yahoo Finance's quote endpoint to keep the app simple and avoid another paid dependency.
 - The timer is expressed in UTC, then narrowed in code so DST changes do not force a schedule update.
 - Fill in `local.settings.json` for local runs or set matching app settings in Azure.
-- The GitHub Actions workflow at `.github/workflows/function-app-cicd.yml` deploys the Function App and then runs the seed script at `labs/function_apps/scripts/seed_cosmos_test_data.py`.
+- The GitHub Actions workflow at `.github/workflows/function-app-cicd.yml` deploys the Function App.
+- Cosmos test data seeding is done locally with `labs/function_apps/scripts/seed_cosmos_test_data.py`.
 - The seed script uses `labs/function_apps/data/test_users.json` and upserts documents, so it is safe to run more than once.
 
 ## GitHub secrets
 
 Add these repository secrets before using the workflow:
 
-- `AZURE_FUNCTIONAPP_NAME`
 - `AZURE_FUNCTIONAPP_PUBLISH_PROFILE`
-- `COSMOS_ENDPOINT`
-- `COSMOS_KEY`
-- `COSMOS_DATABASE_NAME`
-- `COSMOS_CONTAINER_NAME`

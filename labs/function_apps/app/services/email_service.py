@@ -3,17 +3,20 @@ import smtplib
 from email.message import EmailMessage
 
 
-def send_portfolio_report_email(
+def send_daily_stock_report_email(
     to_email: str,
     report_date: str,
     report_rows: list[dict],
-    totals: dict,
 ) -> None:
     message = EmailMessage()
-    message["Subject"] = f"Daily portfolio report for {report_date}"
+    message["Subject"] = f"Daily stock move report for {report_date}"
     message["From"] = os.environ["EMAIL_FROM"]
     message["To"] = to_email
-    message.set_content(build_plain_text_body(report_date, report_rows, totals))
+
+    text_body = build_plain_text_body(report_date, report_rows)
+    html_body = build_html_body(report_date, report_rows)
+    message.set_content(text_body)
+    message.add_alternative(html_body, subtype="html")
 
     smtp_host = os.environ["SMTP_HOST"]
     smtp_port = int(os.getenv("SMTP_PORT", "587"))
@@ -26,32 +29,70 @@ def send_portfolio_report_email(
         client.send_message(message)
 
 
-def build_plain_text_body(report_date: str, report_rows: list[dict], totals: dict) -> str:
+def build_plain_text_body(report_date: str, report_rows: list[dict]) -> str:
     lines = [
-        f"Portfolio report for {report_date}",
+        f"Daily stock move report for {report_date}",
         "",
-        "Symbol | Shares | Avg Cost | Close | Gain/Loss | Gain/Loss %",
-        "------ | ------ | -------- | ----- | --------- | ------------",
+        "Symbol | Prev Close | Current | Change | Change %",
+        "------ | ---------- | ------- | ------ | --------",
     ]
 
     for row in report_rows:
         lines.append(
             f"{row['symbol']} | "
-            f"{row['shares']:.4f} | "
-            f"${row['avgCost']:.2f} | "
-            f"${row['close']:.2f} | "
-            f"${row['gainLoss']:.2f} | "
-            f"{row['gainLossPct']:.2f}%"
+            f"${row['previousClose']:.2f} | "
+            f"${row['current']:.2f} | "
+            f"{format_signed_currency(row['dailyChange'])} | "
+            f"{format_signed_percent(row['dailyChangePct'])}"
         )
 
-    lines.extend(
-        [
-            "",
-            f"Total cost basis: ${totals['totalCostBasis']:.2f}",
-            f"Total market value: ${totals['totalMarketValue']:.2f}",
-            f"Total gain/loss: ${totals['totalGainLoss']:.2f}",
-            f"Total gain/loss %: {totals['totalGainLossPct']:.2f}%",
-        ]
+    return "\n".join(lines)
+
+
+def build_html_body(report_date: str, report_rows: list[dict]) -> str:
+    row_html = []
+    for row in report_rows:
+        change = row["dailyChange"]
+        change_pct = row["dailyChangePct"]
+        color = "#0a7f2e" if change >= 0 else "#b42318"
+        bar_width = min(int(abs(change_pct) * 8), 160)
+
+        row_html.append(
+            "<tr>"
+            f"<td style='padding:8px;border-bottom:1px solid #e5e7eb;'>{row['symbol']}</td>"
+            f"<td style='padding:8px;border-bottom:1px solid #e5e7eb;'>${row['previousClose']:.2f}</td>"
+            f"<td style='padding:8px;border-bottom:1px solid #e5e7eb;'>${row['current']:.2f}</td>"
+            f"<td style='padding:8px;border-bottom:1px solid #e5e7eb;color:{color};'>{format_signed_currency(change)}</td>"
+            f"<td style='padding:8px;border-bottom:1px solid #e5e7eb;color:{color};'>{format_signed_percent(change_pct)}</td>"
+            "<td style='padding:8px;border-bottom:1px solid #e5e7eb;'>"
+            f"<div style='height:10px;width:{bar_width}px;background:{color};border-radius:3px;'></div>"
+            "</td>"
+            "</tr>"
+        )
+
+    return (
+        "<html><body style='font-family:Segoe UI,Arial,sans-serif;'>"
+        f"<h3>Daily stock move report for {report_date}</h3>"
+        "<table style='border-collapse:collapse;min-width:680px;'>"
+        "<thead><tr>"
+        "<th style='text-align:left;padding:8px;border-bottom:2px solid #d0d5dd;'>Symbol</th>"
+        "<th style='text-align:left;padding:8px;border-bottom:2px solid #d0d5dd;'>Prev Close</th>"
+        "<th style='text-align:left;padding:8px;border-bottom:2px solid #d0d5dd;'>Current</th>"
+        "<th style='text-align:left;padding:8px;border-bottom:2px solid #d0d5dd;'>Change</th>"
+        "<th style='text-align:left;padding:8px;border-bottom:2px solid #d0d5dd;'>Change %</th>"
+        "<th style='text-align:left;padding:8px;border-bottom:2px solid #d0d5dd;'>Bar</th>"
+        "</tr></thead>"
+        f"<tbody>{''.join(row_html)}</tbody>"
+        "</table>"
+        "</body></html>"
     )
 
-    return "\n".join(lines)
+
+def format_signed_currency(value: float) -> str:
+    sign = "+" if value >= 0 else "-"
+    return f"{sign}${abs(value):.2f}"
+
+
+def format_signed_percent(value: float) -> str:
+    sign = "+" if value >= 0 else "-"
+    return f"{sign}{abs(value):.2f}%"

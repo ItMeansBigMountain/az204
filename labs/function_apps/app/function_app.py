@@ -10,7 +10,7 @@ from services.cosmos_service import (
     mark_report_sent,
     should_skip_user_for_date,
 )
-from services.email_service import send_portfolio_report_email
+from services.email_service import send_daily_stock_report_email
 from services.stock_service import get_latest_prices_for_symbols
 
 app = func.FunctionApp()
@@ -40,8 +40,8 @@ REPORT_MINUTE_ET = load_report_minute_et()
     run_on_startup=False,
     use_monitor=True,
 )
-def daily_portfolio_report(timer: func.TimerRequest) -> None:
-    """Send a lightweight gain/loss email after US market close on weekdays."""
+def daily_stock_report(timer: func.TimerRequest) -> None:
+    """Send a daily stock move report email after US market close on weekdays."""
     now_utc = datetime.now(UTC)
     now_et = now_utc.astimezone(EASTERN_TZ)
     report_date = now_et.date().isoformat()
@@ -53,7 +53,7 @@ def daily_portfolio_report(timer: func.TimerRequest) -> None:
         logging.info("Outside the report window. Skipping this invocation.")
         return
 
-    logging.info("Portfolio report job started for %s at %s", report_date, now_et.isoformat())
+    logging.info("Daily stock report job started for %s at %s", report_date, now_et.isoformat())
 
     users = get_active_users()
     if not users:
@@ -86,22 +86,20 @@ def daily_portfolio_report(timer: func.TimerRequest) -> None:
 
         report_rows = build_user_report_rows(user.get("stocks", []), price_map)
         if not report_rows:
-            logging.info("Skipping %s because no valid holdings were found.", email)
+            logging.info("Skipping %s because no valid stock rows were found.", email)
             skipped_count += 1
             continue
 
-        totals = calculate_portfolio_totals(report_rows)
-        send_portfolio_report_email(
+        send_daily_stock_report_email(
             to_email=email,
             report_date=report_date,
             report_rows=report_rows,
-            totals=totals,
         )
         mark_report_sent(user["id"], user.get("partitionKey", user["id"]), report_date)
         sent_count += 1
 
     logging.info(
-        "Portfolio report job finished. users=%s sent=%s skipped=%s",
+        "Daily stock report job finished. users=%s sent=%s skipped=%s",
         len(users),
         sent_count,
         skipped_count,
@@ -122,42 +120,38 @@ def build_unique_symbol_list(users: list[dict]) -> list[str]:
 
     for user in users:
         for stock in user.get("stocks", []):
-            symbol = normalize_symbol(stock.get("symbol"))
+            symbol = normalize_stock_item(stock)
             if symbol:
                 symbols.add(symbol)
 
     return sorted(symbols)
 
 
-def build_user_report_rows(stocks: list[dict], price_map: dict[str, float]) -> list[dict]:
+def build_user_report_rows(stocks: list[dict], price_map: dict[str, dict]) -> list[dict]:
     rows = []
 
     for stock in stocks:
-        symbol = normalize_symbol(stock.get("symbol"))
-        shares = safe_float(stock.get("shares"))
-        avg_cost = safe_float(stock.get("avgCost"))
-        close_price = price_map.get(symbol)
+        symbol = normalize_stock_item(stock)
+        price_data = price_map.get(symbol)
 
-        if not symbol or shares is None or avg_cost is None or close_price is None:
-            continue
-        if shares <= 0 or avg_cost < 0 or close_price < 0:
+        if not symbol or not price_data:
             continue
 
-        cost_basis = shares * avg_cost
-        market_value = shares * close_price
-        gain_loss = market_value - cost_basis
-        gain_loss_pct = (gain_loss / cost_basis * 100) if cost_basis > 0 else 0.0
+        current_price = safe_float(price_data.get("current"))
+        prev_close = safe_float(price_data.get("previousClose"))
+        if current_price is None or prev_close is None:
+            continue
+
+        daily_change = current_price - prev_close
+        daily_change_pct = (daily_change / prev_close * 100) if prev_close > 0 else 0.0
 
         rows.append(
             {
                 "symbol": symbol,
-                "shares": round(shares, 4),
-                "avgCost": round(avg_cost, 2),
-                "close": round(close_price, 2),
-                "costBasis": round(cost_basis, 2),
-                "marketValue": round(market_value, 2),
-                "gainLoss": round(gain_loss, 2),
-                "gainLossPct": round(gain_loss_pct, 2),
+                "previousClose": round(prev_close, 2),
+                "current": round(current_price, 2),
+                "dailyChange": round(daily_change, 2),
+                "dailyChangePct": round(daily_change_pct, 2),
             }
         )
 
@@ -165,25 +159,14 @@ def build_user_report_rows(stocks: list[dict], price_map: dict[str, float]) -> l
     return rows
 
 
-def calculate_portfolio_totals(report_rows: list[dict]) -> dict:
-    total_cost_basis = round(sum(row["costBasis"] for row in report_rows), 2)
-    total_market_value = round(sum(row["marketValue"] for row in report_rows), 2)
-    total_gain_loss = round(total_market_value - total_cost_basis, 2)
-    total_gain_loss_pct = round(
-        (total_gain_loss / total_cost_basis * 100) if total_cost_basis > 0 else 0.0,
-        2,
-    )
-
-    return {
-        "totalCostBasis": total_cost_basis,
-        "totalMarketValue": total_market_value,
-        "totalGainLoss": total_gain_loss,
-        "totalGainLossPct": total_gain_loss_pct,
-    }
-
-
 def normalize_symbol(value: object) -> str:
     return str(value or "").strip().upper()
+
+
+def normalize_stock_item(value: object) -> str:
+    if isinstance(value, dict):
+        return normalize_symbol(value.get("symbol"))
+    return normalize_symbol(value)
 
 
 def safe_float(value: object) -> float | None:
