@@ -1,0 +1,19 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=<storage-account>;AccountKey=<storage-key>;EndpointSuffix=core.windows.net",
+    "COSMOS_ENDPOINT": "https://<cosmos-account>.documents.azure.com:443/",
+    "COSMOS_KEY": "<cosmos-key>",
+    "COSMOS_DATABASE_NAME": "portfolio-db",
+    "COSMOS_CONTAINER_NAME": "users",
+    "EMAIL_FROM": "sender@example.com",
+    "SMTP_HOST": "smtp.example.com",
+    "SMTP_PORT": "587",
+    "SMTP_USERNAME": "<smtp-username>",
+    "SMTP_PASSWORD": "<smtp-password>",
+    "TIMER_SCHEDULE": "0 */5 20-21 * * 1-5",
+    "REPORT_MINUTE_ET": "5",
+    "MARKET_DATA_URL": "https://query1.finance.yahoo.com/v7/finance/quote"
+  }
+}

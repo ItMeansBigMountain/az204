@@ -22,6 +22,45 @@ This application is an Azure Function timer job that sends a daily stock price-c
   (used by `services/stock_service.py` to get `regularMarketPrice` and `regularMarketPreviousClose`).
 - **SMTP** for sending outbound emails.
 
+## Local configuration
+
+Use the example files in this folder as the source of truth for required settings:
+
+- `.env.example`
+- `local.settings.example.json`
+
+They show every value the app expects for both:
+
+- app-level settings used by the Python code
+- Azure Functions host settings required by `func start`
+
+Before running locally:
+
+1. Copy `.env.example` into `.env` and fill in real values.
+2. Copy `local.settings.example.json` into `local.settings.json` and fill in the same real values.
+
+Required settings:
+
+- `AzureWebJobsStorage`
+- `COSMOS_ENDPOINT`
+- `COSMOS_KEY`
+- `COSMOS_DATABASE_NAME`
+- `COSMOS_CONTAINER_NAME`
+- `EMAIL_FROM`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USERNAME`
+- `SMTP_PASSWORD`
+- `TIMER_SCHEDULE`
+- `REPORT_MINUTE_ET`
+- `MARKET_DATA_URL`
+
+Notes:
+
+- `AzureWebJobsStorage` must be a valid Azure Storage connection string for the timer trigger listener.
+- `func start` reads `local.settings.json`; it does not automatically load `.env`.
+- `.env` is useful as a parallel reference file, but the Functions host still needs `local.settings.json`.
+
 ## User document shape
 
 ```json
