@@ -37,7 +37,7 @@ REPORT_MINUTE_ET = load_report_minute_et()
 @app.timer_trigger(
     schedule=SCHEDULE,
     arg_name="timer",
-    run_on_startup=False,
+    run_on_startup=True,
     use_monitor=True,
 )
 def daily_stock_report(timer: func.TimerRequest) -> None:
