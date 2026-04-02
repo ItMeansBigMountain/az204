@@ -5,6 +5,9 @@ from zoneinfo import ZoneInfo
 
 import azure.functions as func
 
+
+debug_mode = True
+
 from services.cosmos_service import (
     get_active_users,
     mark_report_sent,
@@ -30,7 +33,9 @@ def load_report_minute_et() -> int:
 
 
 EASTERN_TZ = ZoneInfo("America/New_York")
-SCHEDULE = os.getenv("TIMER_SCHEDULE", "0 */5 20-21 * * 1-5")
+
+SCHEDULE = os.getenv("TIMER_SCHEDULE", "0 * * * * *") if debug_mode else os.getenv("TIMER_SCHEDULE", "0 */5 20-21 * * 1-5")
+
 REPORT_MINUTE_ET = load_report_minute_et()
 
 
@@ -49,9 +54,9 @@ def daily_stock_report(timer: func.TimerRequest) -> None:
     if timer.past_due:
         logging.warning("Timer trigger is running behind schedule.")
 
-    if not should_run_for_current_window(now_et):
-        logging.info("Outside the report window. Skipping this invocation.")
-        return
+    # Test mode: bypass the normal market-close window so local runs execute immediately.
+    if debug_mode:
+        logging.info("Test mode enabled. Ignoring the normal report window and continuing.")
 
     logging.info("Daily stock report job started for %s at %s", report_date, now_et.isoformat())
 
@@ -105,14 +110,6 @@ def daily_stock_report(timer: func.TimerRequest) -> None:
         skipped_count,
     )
 
-
-def should_run_for_current_window(now_et: datetime) -> bool:
-    """Allow the job to run once during a narrow ET window while surviving DST changes."""
-    return (
-        now_et.weekday() < 5
-        and now_et.hour == 16
-        and REPORT_MINUTE_ET <= now_et.minute < REPORT_MINUTE_ET + 5
-    )
 
 
 def build_unique_symbol_list(users: list[dict]) -> list[str]:
