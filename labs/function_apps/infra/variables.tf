@@ -81,10 +81,68 @@ variable "email_from" {
   description = "From address for the daily report emails."
 }
 
-variable "market_data_url" {
+variable "market_data_provider_order" {
   type        = string
-  default     = "https://query1.finance.yahoo.com/v7/finance/quote"
-  description = "Quote endpoint used by the function app."
+  default     = "twelvedata,finnhub,fmp,alphavantage"
+  description = "Ordered list of stock quote providers to try."
+}
+
+variable "market_data_timeout_seconds" {
+  type        = string
+  default     = "20"
+  description = "HTTP timeout used for market data providers."
+}
+
+variable "twelvedata_api_key" {
+  type        = string
+  default     = ""
+  description = "Twelve Data API key."
+  sensitive   = true
+}
+
+variable "twelvedata_quote_url" {
+  type        = string
+  default     = "https://api.twelvedata.com/quote"
+  description = "Twelve Data quote endpoint."
+}
+
+variable "finnhub_api_key" {
+  type        = string
+  default     = ""
+  description = "Finnhub API key."
+  sensitive   = true
+}
+
+variable "finnhub_quote_url" {
+  type        = string
+  default     = "https://finnhub.io/api/v1/quote"
+  description = "Finnhub quote endpoint."
+}
+
+variable "fmp_api_key" {
+  type        = string
+  default     = ""
+  description = "Financial Modeling Prep API key."
+  sensitive   = true
+}
+
+variable "fmp_quote_url" {
+  type        = string
+  default     = "https://financialmodelingprep.com/stable/quote"
+  description = "Financial Modeling Prep quote endpoint."
+}
+
+variable "alphavantage_api_key" {
+  type        = string
+  default     = ""
+  description = "Alpha Vantage API key."
+  sensitive   = true
+}
+
+variable "alphavantage_quote_url" {
+  type        = string
+  default     = "https://www.alphavantage.co/query"
+  description = "Alpha Vantage quote endpoint."
 }
 
 variable "timer_schedule" {

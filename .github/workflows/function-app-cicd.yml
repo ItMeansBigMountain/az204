@@ -13,6 +13,9 @@ jobs:
   deploy-function-app:
     name: Deploy Azure Function App
     runs-on: ubuntu-latest
+    env:
+      AZURE_FUNCTIONAPP_NAME: daily-portfolio-func
+      AZURE_FUNCTIONAPP_PACKAGE_PATH: labs/function_apps/app
 
     steps:
     - name: Checkout
@@ -23,12 +26,19 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Install app dependencies
-      run: pip install -r labs/function_apps/app/requirements.txt
+    - name: Build Python dependencies into deployment package
+      shell: bash
+      run: |
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+        popd
 
     - name: Deploy Function App package
       uses: Azure/functions-action@v1
       with:
-        app-name: 'daily-portfolio-func'
-        package: labs/function_apps/app
+        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+        package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+        scm-do-build-during-deployment: true
+        enable-oryx-build: true

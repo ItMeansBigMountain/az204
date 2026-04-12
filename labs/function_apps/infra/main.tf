@@ -104,8 +104,17 @@ resource "azurerm_linux_function_app" "function_app" {
     SMTP_USERNAME                         = var.smtp_username
     SMTP_PASSWORD                         = var.smtp_password
     EMAIL_FROM                            = var.email_from
-    MARKET_DATA_URL                       = var.market_data_url
     TIMER_SCHEDULE                        = var.timer_schedule
     REPORT_MINUTE_ET                      = var.report_minute_et
+    MARKET_DATA_PROVIDER_ORDER            = var.market_data_provider_order
+    MARKET_DATA_TIMEOUT_SECONDS           = var.market_data_timeout_seconds
+    TWELVEDATA_API_KEY                    = var.twelvedata_api_key
+    TWELVEDATA_QUOTE_URL                  = var.twelvedata_quote_url
+    FINNHUB_API_KEY                       = var.finnhub_api_key
+    FINNHUB_QUOTE_URL                     = var.finnhub_quote_url
+    FMP_API_KEY                           = var.fmp_api_key
+    FMP_QUOTE_URL                         = var.fmp_quote_url
+    ALPHAVANTAGE_API_KEY                  = var.alphavantage_api_key
+    ALPHAVANTAGE_QUOTE_URL                = var.alphavantage_quote_url
   }
 }
