@@ -17,9 +17,11 @@ This application is an Azure Function timer job that sends a daily stock price-c
 
 - **Azure Functions (Python)** for scheduling and execution.
 - **Azure Cosmos DB SQL API** for user portfolio documents.
-- **Yahoo Finance quote API** via:
-  `https://query1.finance.yahoo.com/v7/finance/quote`
-  (used by `services/stock_service.py` to get `regularMarketPrice` and `regularMarketPreviousClose`).
+- **Stock quote providers** via an ordered fallback chain in `services/stock_service.py`:
+  - Twelve Data
+  - Finnhub
+  - Financial Modeling Prep
+  - Alpha Vantage
 - **SMTP** for sending outbound emails.
 
 ## Local configuration
@@ -53,13 +55,23 @@ Required settings:
 - `SMTP_PASSWORD`
 - `TIMER_SCHEDULE`
 - `REPORT_MINUTE_ET`
-- `MARKET_DATA_URL`
+- `MARKET_DATA_PROVIDER_ORDER`
+- `MARKET_DATA_TIMEOUT_SECONDS`
+- `TWELVEDATA_API_KEY`
+- `TWELVEDATA_QUOTE_URL`
+- `FINNHUB_API_KEY`
+- `FINNHUB_QUOTE_URL`
+- `FMP_API_KEY`
+- `FMP_QUOTE_URL`
+- `ALPHAVANTAGE_API_KEY`
+- `ALPHAVANTAGE_QUOTE_URL`
 
 Notes:
 
 - `AzureWebJobsStorage` must be a valid Azure Storage connection string for the timer trigger listener.
 - `func start` reads `local.settings.json`; it does not automatically load `.env`.
 - `.env` is useful as a parallel reference file, but the Functions host still needs `local.settings.json`.
+- `MARKET_DATA_PROVIDER_ORDER` controls the fallback order. The app tries each provider and keeps any valid prices it gets back.
 
 ## User document shape
 

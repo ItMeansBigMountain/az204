@@ -6,7 +6,14 @@ from zoneinfo import ZoneInfo
 import azure.functions as func
 
 
-debug_mode = True
+####################################################
+# USE DEBUG MODE TO RUN LOCALLY! 
+
+debug_mode = False
+
+####################################################
+
+
 
 from services.cosmos_service import (
     get_active_users,
@@ -42,7 +49,7 @@ REPORT_MINUTE_ET = load_report_minute_et()
 @app.timer_trigger(
     schedule=SCHEDULE,
     arg_name="timer",
-    run_on_startup=True,
+    run_on_startup=debug_mode,
     use_monitor=True,
 )
 def daily_stock_report(timer: func.TimerRequest) -> None:

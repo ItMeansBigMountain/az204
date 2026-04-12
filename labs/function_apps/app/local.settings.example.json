@@ -14,6 +14,15 @@
     "SMTP_PASSWORD": "<smtp-password>",
     "TIMER_SCHEDULE": "0 */5 20-21 * * 1-5",
     "REPORT_MINUTE_ET": "5",
-    "MARKET_DATA_URL": "https://query1.finance.yahoo.com/v7/finance/quote"
+    "MARKET_DATA_PROVIDER_ORDER": "twelvedata,finnhub,fmp,alphavantage",
+    "MARKET_DATA_TIMEOUT_SECONDS": "20",
+    "TWELVEDATA_API_KEY": "",
+    "TWELVEDATA_QUOTE_URL": "https://api.twelvedata.com/quote",
+    "FINNHUB_API_KEY": "",
+    "FINNHUB_QUOTE_URL": "https://finnhub.io/api/v1/quote",
+    "FMP_API_KEY": "",
+    "FMP_QUOTE_URL": "https://financialmodelingprep.com/stable/quote",
+    "ALPHAVANTAGE_API_KEY": "",
+    "ALPHAVANTAGE_QUOTE_URL": "https://www.alphavantage.co/query"
   }
 }

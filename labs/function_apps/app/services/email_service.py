@@ -1,3 +1,4 @@
+import logging
 import os
 import smtplib
 from email.message import EmailMessage
@@ -25,7 +26,17 @@ def send_daily_stock_report_email(
 
     with smtplib.SMTP(smtp_host, smtp_port, timeout=30) as client:
         client.starttls()
-        client.login(smtp_username, smtp_password)
+        try:
+            client.login(smtp_username, smtp_password)
+        except smtplib.SMTPAuthenticationError as exc:
+            logging.error(
+                "SMTP authentication failed for host='%s' username='%s' code=%s response=%s",
+                smtp_host,
+                smtp_username,
+                exc.smtp_code,
+                exc.smtp_error,
+            )
+            raise
         client.send_message(message)
 
 
